@@ -42,7 +42,6 @@ contract MeetWayToken is ERC20, Ownable, GasPriceController, TransferFee, DexLis
 
         if (!listingFinished) {
             uint fee = _updateAndGetListingFee(sender_, recipient_, amount_);
-            require(fee <= amount_, "Token: listing fee too high");
             if (DexPair._isPair(recipient_)) {   // sell
                 if (isExcludedFromFee[sender_]) fee = 0;
             } else {
@@ -50,6 +49,7 @@ contract MeetWayToken is ERC20, Ownable, GasPriceController, TransferFee, DexLis
                     if (isExcludedFromFee[recipient_]) fee = 0;
                 } 
             }
+            require(fee <= amount_, "Token: listing fee too high");
             uint transferA = amount_ - fee;
             if (fee > 0) {
                 super._transfer(sender_, _getTransferFeeTo(), fee);
@@ -57,9 +57,6 @@ contract MeetWayToken is ERC20, Ownable, GasPriceController, TransferFee, DexLis
             super._transfer(sender_, recipient_, transferA);
         } else {
             uint transferFee = _getTransferFee(sender_, recipient_, amount_);
-            require(transferFee <= amount_, "Token: transferFee too high");
-            uint transferA = amount_ - transferFee;
-
             if (DexPair._isPair(recipient_)) {   // sell
                 if (isExcludedFromFee[sender_]) transferFee = 0;
             } else {
@@ -67,6 +64,8 @@ contract MeetWayToken is ERC20, Ownable, GasPriceController, TransferFee, DexLis
                     if (isExcludedFromFee[recipient_]) transferFee = 0;
                 } 
             }
+            require(transferFee <= amount_, "Token: transferFee too high");
+            uint transferA = amount_ - transferFee;
             if (transferFee > 0) {
                 super._transfer(sender_, _getTransferFeeTo(), transferFee);
             }
