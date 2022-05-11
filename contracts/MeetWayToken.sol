@@ -18,7 +18,7 @@ contract MeetWayToken is ERC20, Ownable, GasPriceController, TransferFee, DexLis
     ERC20("MeetWay Token", "MET")
     DexListing(100) {
 
-        _mint(msg.sender,  600000000 * (10**18));
+        _mint(msg.sender,  100000000 * (10**18));
         _setTransferFee(msg.sender, 0, 0, 0);
     }
 
